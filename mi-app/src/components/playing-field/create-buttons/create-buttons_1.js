@@ -10,34 +10,34 @@ export class ClassCreateButtonsContainer extends Component {
 		this.buttonsWon = props.buttonsWon;
 		this.playerN = props.playerN;
 		this.dispatch = props.dispatch;
+		console.log('1', props);
+	}
+	prov(item) {
+		const gameResult = TicTacToeLogic({
+			...this.props.buttons,
+			[item.target.id]: this.props.playerN,
+		});
+		const fullField = Object.values({
+			...this.props.buttons,
+			[item.target.id]: this.props.playerN,
+		}).some((i) => i === '');
+
+		if (gameResult) {
+			return playerWon([item.target.id, gameResult, this.props.playerN]);
+		}
+
+		if (!fullField) {
+			return nobodyWon(item.target.id);
+		}
+
+		if (item.target.textContent === '') {
+			return playerTurn([item.target.id, this.props.playerN]);
+		}
 	}
 
 	onPlayerTurn(item) {
-		if (item.target.textContent === '') {
-			this.props.dispatch(playerTurn([item.target.id, this.props.playerN]));
-			const gameResult = TicTacToeLogic({
-				...this.props.buttons,
-				[item.target.id]: this.props.playerN,
-			});
-			const fullField = Object.values({
-				...this.props.buttons,
-				[item.target.id]: this.props.playerN,
-			}).some((i) => i === '');
-			if (gameResult) {
-				this.props.dispatch(
-					playerWon([item.target.id, gameResult, this.props.playerN]),
-				);
-			}
-			if (!fullField) {
-				if (gameResult) {
-					this.props.dispatch(
-						playerWon([item.target.id, gameResult, this.props.playerN]),
-					);
-				} else {
-					this.props.dispatch(nobodyWon(item.target.id));
-				}
-			}
-		}
+		console.log('res', this.prov(item));
+		this.props.dispatch(this.prov(item));
 	}
 	render() {
 		return (
@@ -63,6 +63,7 @@ export class ClassCreateButtonsContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
+	console.log(state);
 	return {
 		buttons: state.fieldState,
 		buttonsWon: state.wonState,
